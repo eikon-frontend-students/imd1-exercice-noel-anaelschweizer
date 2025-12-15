@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <title>🎄 Starry Christmas Catch</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <div id="stars"></div>
+
+    <div id="game">
+      <div id="score">
+        Score : <span id="scoreValue">0</span> | Ratés :
+        <span id="missedValue">0</span>/10
+      </div>
+      <div id="basket"></div>
+    </div>
+
+    <!-- 😱 JUMPSCARE -->
+    <div id="jumpscare">
+      <img src="https://i.imgur.com/7QbZQ0F.png" alt="Grinch" />
+    </div>
+
+    <script src="script.js"></script>
+  </body>
+</html>
+
+/* 😱 JUMPSCARE */ #jumpscare { position: fixed; inset: 0; background: black;
+display: none; justify-content: center; align-items: center; z-index: 999; }
+#jumpscare img { width: 100%; height: 100%; object-fit: cover; animation: scare
+0.2s infinite alternate; } @keyframes scare { from { transform: scale(1); } to {
+transform: scale(1.05); } } const game = document.getElementById("game"); const
+basket = document.getElementById("basket"); const scoreValue =
+document.getElementById("scoreValue"); const missedValue =
+document.getElementById("missedValue"); const jumpscare =
+document.getElementById("jumpscare"); let score = 0; let missed = 0; let speed =
+1.2; // 🐢 très lent au début let running = true; let spawner;
+document.addEventListener("mousemove", (e) => { basket.style.left = e.clientX -
+basket.offsetWidth / 2 + "px"; }); function createGift() { if (!running) return;
+const gift = document.createElement("div"); gift.classList.add("gift");
+gift.style.left = Math.random() * (window.innerWidth - 40) + "px";
+gift.style.animationDuration = (8 / speed) + "s"; game.appendChild(gift); const
+interval = setInterval(() => { const g = gift.getBoundingClientRect(); const b =
+basket.getBoundingClientRect(); // 🎯 ATTRAPÉ if ( g.bottom >= b.top && g.left <
+b.right && g.right > b.left ) { score++; speed += 0.12; // ⚡ accélération
+progressive scoreValue.textContent = score; gift.remove();
+clearInterval(interval); } // ❌ RATÉ if (g.top > window.innerHeight) {
+missed++; missedValue.textContent = missed; gift.remove();
+clearInterval(interval); if (missed >= 10) { endGame(); } } }, 20); } function
+startGame() { score = 0; missed = 0; speed = 1.2; running = true;
+scoreValue.textContent = "0"; missedValue.textContent = "0";
+jumpscare.style.display = "none"; document.querySelectorAll(".gift").forEach(g
+=> g.remove()); clearInterval(spawner); spawner = setInterval(createGift, 900);
+} function endGame() { running = false; clearInterval(spawner); // 😱 JUMPSCARE
+jumpscare.style.display = "flex"; setTimeout(() => { startGame(); }, 1500); }
+startGame();
+
+<!DOCTYPE html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <title>🎄 Starry Christmas Catch</title>
+
+    <style>
+      /* ===== RESET ===== */
+
+      * {
+        margin: 0;
+
+        padding: 0;
+
+        box-sizing: border-box;
+      }
+
+      /* ===== FOND ÉTOILÉ ===== */
+
+      body {
+        height: 100vh;
+
+        overflow: hidden;
+
+        background: radial-gradient(circle at bottom, #0a1a2f, #000814);
+
+        font-family: Arial, sans-serif;
+      }
+
+      /* Étoiles */
+
+      #stars {
+        position: fixed;
+
+        inset: 0;
+
+        background: radial-gradient(1px 1px at 10% 20%, white, transparent),
+          radial-gradient(2px 2px at 30% 80%, white, transparent),
+          radial-gradient(1px 1px at 50% 40%, white, transparent),
+          radial-gradient(2px 2px at 70% 10%, white, transparent),
+          radial-gradient(1px 1px at 90% 60%, white, transparent);
+
+        animation: twinkle 3s infinite alternate;
+
+        z-index: 0;
+      }
+
+      @keyframes twinkle {
+        from {
+          opacity: 0.5;
+        }
+
+        to {
+          opacity: 1;
+        }
+      }
+
+      /* ===== JEU ===== */
+
+      #game {
+        position: relative;
+
+        width: 100%;
+
+        height: 100vh;
+
+        z-index: 1;
+      }
+
+      #hud {
+        position: absolute;
+
+        top: 15px;
+
+        left: 20px;
+
+        color: white;
+
+        font-size: 20px;
+      }
+
+      /* ===== PANIER ===== */
+
+      #basket {
+        position: absolute;
+
+        bottom: 25px;
+
+        width: 120px;
+
+        height: 40px;
+
+        background: linear-gradient(#8b0000, #b22222);
+
+        border-radius: 0 0 20px 20px;
+
+        border: 3px solid white;
+
+        left: 50%;
+
+        transform: translateX(-50%);
+      }
+
+      /* ===== CADEAUX ===== */
+
+      .gift {
+        position: absolute;
+
+        top: -60px;
+
+        width: 40px;
+
+        height: 40px;
+
+        background: linear-gradient(#ff4d4d, #c1121f);
+
+        border-radius: 6px;
+      }
+
+      .gift::before,
+      .gift::after {
+        content: "";
+
+        position: absolute;
+
+        background: gold;
+      }
+
+      .gift::before {
+        width: 6px;
+
+        height: 100%;
+
+        left: 50%;
+
+        transform: translateX(-50%);
+      }
+
+      .gift::after {
+        height: 6px;
+
+        width: 100%;
+
+        top: 50%;
+
+        transform: translateY(-50%);
+      }
+
+      /* ===== JUMPSCARE ===== */
+
+      #jumpscare {
+        position: fixed;
+
+        inset: 0;
+
+        background: black;
+
+        display: none;
+
+        justify-content: center;
+
+        align-items: center;
+
+        z-index: 999;
+      }
+
+      #jumpscare img {
+        width: 100%;
+
+        height: 100%;
+
+        object-fit: cover;
+
+        animation: shake 0.15s infinite alternate;
+      }
+
+      @keyframes shake {
+        from {
+          transform: scale(1);
+        }
+
+        to {
+          transform: scale(1.05);
+        }
+      }
+    </style>
+  </head>
+
+  <body>
+    <div id="stars"></div>
+
+    <div id="game">
+      <div id="hud">
+        Score : <span id="score">0</span> | Ratés :
+        <span id="missed">0</span>/10
+      </div>
+      <div id="basket"></div>
+    </div>
+
+    <div id="jumpscare">
+      <img src="https://i.imgur.com/7QbZQ0F.png" alt="Grinch" />
+    </div>
+
+    <script>
+      /* ===== VARIABLES ===== */
+
+      const game = document.getElementById("game");
+
+      const basket = document.getElementById("basket");
+
+      const scoreEl = document.getElementById("score");
+
+      const missedEl = document.getElementById("missed");
+
+      const jumpscare = document.getElementById("jumpscare");
+
+      let score = 0;
+
+      let missed = 0;
+
+      let speed = 0.6; // très lent au début
+
+      let running = true;
+
+      /* ===== CONTRÔLE SOURIS ===== */
+
+      document.addEventListener("mousemove", (e) => {
+        basket.style.left = e.clientX - basket.offsetWidth / 2 + "px";
+      });
+
+      /* ===== CRÉER CADEAU ===== */
+
+      function createGift() {
+        if (!running) return;
+
+        const gift = document.createElement("div");
+
+        gift.className = "gift";
+
+        gift.style.left = Math.random() * (window.innerWidth - 40) + "px";
+
+        game.appendChild(gift);
+
+        let y = -60;
+
+        const fall = setInterval(() => {
+          y += speed;
+
+          gift.style.top = y + "px";
+
+          const g = gift.getBoundingClientRect();
+
+          const b = basket.getBoundingClientRect();
+
+          // ATTRAPÉ
+
+          if (g.bottom >= b.top && g.left < b.right && g.right > b.left) {
+            score++;
+
+            speed += 0.15; // accélération progressive
+
+            scoreEl.textContent = score;
+
+            gift.remove();
+
+            clearInterval(fall);
+          }
+
+          // RATÉ
+
+          if (y > window.innerHeight) {
+            missed++;
+
+            missedEl.textContent = missed;
+
+            gift.remove();
+
+            clearInterval(fall);
+
+            if (missed >= 10) {
+              endGame();
+            }
+          }
+        }, 16);
+      }
+
+      /* ===== BOUCLE ===== */
+
+      function gameLoop() {
+        if (!running) return;
+
+        createGift();
+
+        setTimeout(gameLoop, 900);
+      }
+
+      /* ===== FIN ===== */
+
+      function endGame() {
+        running = false;
+
+        jumpscare.style.display = "flex";
+
+        setTimeout(() => {
+          location.reload();
+        }, 1500);
+      }
+
+      /* ===== DÉMARRAGE ===== */
+
+      gameLoop();
+    </script>
+  </body>
+</html>
